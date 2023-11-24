@@ -1,0 +1,1817 @@
+Question 1 --->
+
+(i)Create tables according to the following definition.
+CREATE TABLE DEPOSIT (ACTNO VARCHAR2(5), CNAME VARCHAR2(18),
+BNAME VARCHAR2(18), AMOUNT NUMBER(8,2) , ADATE DATE); 
+CREATE TABLE BRANCH(BNAME VARCHAR2(18),CITY VARCHAR2(18)); 
+CREATE TABLE CUSTOMERS(CNAME VARCHAR2(19) ,CITY VARCHAR2(18)); 
+CREATE TABLE BORROW(LOANNO VARCHAR2(5), CNAME VARCHAR2(18),
+BNAME VARCHAR2(18), AMOUNT NUMBER (8,2)); 
+(ii) Insert the data for all tables.
+From the above given tables perform the following queries:
+(1) Describe deposit, branch.
+(2) List all data from table DEPOSIT
+(3) List all data from table BORROW. 
+(4) Give account number and amount of depositors.
+
+
+
+Answer -->
+
+(i)
+CREATE TABLE DEPOSIT (
+  ACTNO VARCHAR2(5) PRIMARY KEY,
+  CNAME VARCHAR2(18) NOT NULL,
+  BNAME VARCHAR2(18) NOT NULL,
+  AMOUNT NUMBER(8,2) NOT NULL,
+  ADATE DATE NOT NULL
+);
+
+CREATE TABLE BRANCH(
+  BNAME VARCHAR2(18) PRIMARY KEY,
+  CITY VARCHAR2(18) NOT NULL
+);
+
+CREATE TABLE CUSTOMERS(
+  CNAME VARCHAR2(19) PRIMARY KEY,
+  CITY VARCHAR2(18) NOT NULL
+);
+
+CREATE TABLE BORROW(
+  LOANNO VARCHAR2(5) PRIMARY KEY,
+  CNAME VARCHAR2(18) NOT NULL REFERENCES CUSTOMERS(CNAME),
+  BNAME VARCHAR2(18) NOT NULL REFERENCES BRANCH(BNAME),
+  AMOUNT NUMBER (8,2) NOT NULL
+);
+
+(ii)
+INSERT INTO DEPOSIT VALUES
+('A1234', 'Alice', 'City Bank', 10000.00, '2023-01-01'),
+('B5678', 'Bob', 'State Bank', 20000.00, '2023-02-02'),
+('C9012', 'Charlie', 'National Bank', 30000.00, '2023-03-03');
+
+INSERT INTO BRANCH VALUES
+('City Bank', 'New York'),
+('State Bank', 'Chicago'),
+('National Bank', 'Los Angeles');
+
+INSERT INTO CUSTOMERS VALUES
+('Alice', 'New York'),
+('Bob', 'Chicago'),
+('Charlie', 'Los Angeles'),
+('David', 'San Francisco'),
+('Emily', 'Seattle');
+
+INSERT INTO BORROW VALUES
+('L1234', 'Alice', 'City Bank', 5000.00),
+('L5678', 'Bob', 'State Bank', 10000.00),
+('L9012', 'Charlie', 'National Bank', 15000.00);
+
+
+(1)
+DESCRIBE DEPOSIT;
+DESCRIBE BRANCH;
+
+(2)
+SELECT * FROM DEPOSIT;
+
+(3)
+SELECT * FROM BORROW;
+
+(4)
+SELECT ACTNO, AMOUNT FROM DEPOSIT;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Question 2 --->
+
+Create the below given table and insert the data accordingly. 
+Job (job_id, job_title, min_sal, max_sal) 
+Employee (emp_no, emp_name, emp_sal, emp_comm, dept_no)
+deposit(a_no,cname,bname,amount,a_date).
+borrow(loanno,cname,bname,amount). 
+Insert the data for all tables.
+-> Perform following queries: 
+(1) Retrieve all data from employee, jobs and deposit. 
+(2) Give details of account no. and deposited rupees of customers having account opened 
+between dates 01-01-06 and 25-07-06 
+(3) Display all jobs with minimum salary is greater than 4000 
+(4) Display name and salary of employee whose department no is 20. Give alias name to 
+name of employee. 
+
+
+
+Answer -->
+
+(i)
+-- Create tables
+CREATE TABLE Job (
+  job_id VARCHAR(10) PRIMARY KEY,
+  job_title VARCHAR(50) NOT NULL,
+  min_sal NUMBER(5,2) NOT NULL,
+  max_sal NUMBER(5,2) NOT NULL
+);
+
+CREATE TABLE Employee (
+  emp_no NUMBER(4) PRIMARY KEY,
+  emp_name VARCHAR(30) NOT NULL,
+  emp_sal NUMBER(5,2) NOT NULL,
+  emp_comm NUMBER(5,2),
+  dept_no NUMBER(2) NOT NULL
+);
+
+CREATE TABLE deposit(
+  a_no VARCHAR2(5) PRIMARY KEY,
+  cname VARCHAR2(18) NOT NULL,
+  bname VARCHAR2(18) NOT NULL,
+  amount NUMBER(8,2) NOT NULL,
+  a_date DATE NOT NULL
+);
+
+CREATE TABLE borrow(
+  loanno VARCHAR2(5) PRIMARY KEY,
+  cname VARCHAR2(18) NOT NULL REFERENCES CUSTOMERS(CNAME),
+  bname VARCHAR2(18) NOT NULL REFERENCES BRANCH(BNAME),
+  amount NUMBER (8,2) NOT NULL
+);
+
+(ii)
+-- Insert data into tables
+INSERT INTO Job VALUES
+('IT_PROG', 'Programmer', 4000, 10000),
+('MK_MGR', 'Marketing Manager', 9000, 15000),
+('FI_MGR', 'Finance Manager', 8200, 12000),
+('FI_ACC', 'Accountant', 4200, 9000),
+('LEC', 'Lecturer', 6000, 17000),
+('COMP_OP', 'Computer Operator', 1500, 3000);
+
+INSERT INTO Employee VALUES
+(101, 'Smith', 800, NULL, 20),
+(102, 'Adama', 1100, 0, 20),
+(103, 'Anamika', 2975, NULL, 30),
+(104, 'Aman', 3000, NULL, 15),
+(105, 'Anita', 5000, 50000, 10),
+(106, 'Sneha', 2450, 24500, 10),
+(107, 'Anamika', 2975, NULL, 30);
+
+INSERT INTO deposit VALUES
+('101', 'Anil', 'andheri', 7000, '01-jan-06'),
+('102', 'Sunil', 'virar', 5000, '15-jul-06'),
+('103', 'Amit', 'kandivali', 8000, '01-jan-06');
+
+INSERT INTO borrow VALUES
+('L1234', 'Alice', 'City Bank', 5000),
+('L5678', 'Bob', 'State Bank', 10000),
+('L9012', 'Charlie', 'National Bank', 15000);
+
+
+(1)
+-- Retrieve data from all tables
+SELECT * FROM Employee;
+SELECT * FROM Job;
+SELECT * FROM deposit;
+
+(2)
+-- Give details of account no. and deposited rupees of customers
+SELECT a_no, amount, cname
+FROM deposit
+WHERE a_date BETWEEN '01-01-06' AND '25-07-06';
+
+(3)
+-- Display all jobs with minimum salary is greater than 4000
+SELECT * FROM Job
+WHERE min_sal > 4000;
+
+(4)
+-- Display name and salary of employee whose department no is 20
+SELECT emp_name AS emp_alias, emp_sal
+FROM Employee
+WHERE dept_no = 20;
+
+
+
+
+
+
+
+
+
+
+
+
+
+Question 3 --->
+
+
+Create the below given table and insert the data accordingly. 
+Job (job_id, job_title, min_sal, max_sal) 
+Employee (emp_no, emp_name, emp_sal, emp_comm, dept_no)
+deposit(a_no,cname,bname,amount,a_date).
+borrow(loanno,cname,bname,amount). 
+Insert the data for all tables.
+(1) List total deposit from deposit.
+(2) List total loan from karolbagh branch
+(3) Give maximum loan from branch vrce.
+(4) Count total number of customers.
+
+
+
+Answer -->
+
+
+CREATE TABLE Job (
+  job_id VARCHAR(10) PRIMARY KEY,
+  job_title VARCHAR(50) NOT NULL,
+  min_sal NUMBER(5,2) NOT NULL,
+  max_sal NUMBER(5,2) NOT NULL
+);
+
+CREATE TABLE Employee (
+  emp_no NUMBER(4) PRIMARY KEY,
+  emp_name VARCHAR(30) NOT NULL,
+  emp_sal NUMBER(5,2) NOT NULL,
+  emp_comm NUMBER(5,2),
+  dept_no NUMBER(2) NOT NULL
+);
+
+CREATE TABLE deposit(
+  a_no VARCHAR(5) PRIMARY KEY,
+  cname VARCHAR(20) NOT NULL,
+  bname VARCHAR(20) NOT NULL,
+  amount NUMBER(8,2) NOT NULL,
+  a_date DATE NOT NULL
+);
+
+CREATE TABLE borrow(
+  loanno VARCHAR(5) PRIMARY KEY,
+  cname VARCHAR(20) NOT NULL REFERENCES customers(cname),
+  bname VARCHAR(20) NOT NULL REFERENCES branch(bname),
+  amount NUMBER(8,2) NOT NULL
+);
+
+INSERT INTO Job VALUES
+('IT_PROG', 'Programmer', 4000, 10000),
+('MK_MGR', 'Marketing Manager', 9000, 15000),
+('FI_MGR', 'Finance Manager', 8200, 12000),
+('FI_ACC', 'Accountant', 4200, 9000),
+('LEC', 'Lecturer', 6000, 17000),
+('COMP_OP', 'Computer Operator', 1500, 3000);
+
+INSERT INTO Employee VALUES
+(101, 'Smith', 800, NULL, 20),
+(102, 'Adama', 1100, 0, 20),
+(103, 'Anamika', 2975, NULL, 30),
+(104, 'Aman', 3000, NULL, 15),
+(105, 'Anita', 5000, 50000, 10),
+(106, 'Sneha', 2450, 24500, 10),
+(107, 'Anamika', 2975, NULL, 30);
+
+INSERT INTO deposit VALUES
+('101', 'Anil', 'Andheri', 7000, '2006-01-01'),
+('102', 'Sunil', 'Virar', 5000, '2006-07-15'),
+('103', 'Amit', 'Kandivali', 8000, '2006-01-01');
+
+INSERT INTO borrow VALUES
+('L1234', 'Alice', 'City Bank', 5000),
+('L5678', 'Bob', 'State Bank', 10000),
+('L9012', 'Charlie', 'National Bank', 15000);
+
+(1) List total deposit from deposit
+SELECT SUM(amount) AS total_deposit
+FROM deposit;
+
+(2) List total loan from karolbagh branch
+SELECT SUM(amount) AS total_karolbagh_loan
+FROM borrow
+WHERE bname = 'karolbagh';
+
+(3) Give maximum loan from branch vrce
+SELECT MAX(amount) AS max_vrce_loan
+FROM borrow
+WHERE bname = 'vrce';
+
+(4) Count total number of customers
+SELECT COUNT(DISTINCT cname) AS total_customers
+FROM deposit;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Question 4 --->
+
+To implement Single-row functions. (i) Create tables according to the need. (ii) Insert the data for all tables. (1) Write a query to display the current date. Label the column Date. (2) For each employee, display the employee number, job, salary, and salary increased by 15% and expressed as a whole number. Label the column New Salary (3) Modify your query to add a column that subtracts the old salary from the new salary. Label the column Increase
+
+
+Answer -->
+
+CREATE TABLE emp
+(
+  emp_no NUMBER(4) PRIMARY KEY,
+  emp_name VARCHAR(30) NOT NULL,
+  emp_sal NUMBER(5,2) NOT NULL,
+  job_id VARCHAR(10) NOT NULL,
+  dept_no NUMBER(2) NOT NULL,
+  FOREIGN KEY (job_id) REFERENCES jobs(job_id)
+);
+
+CREATE TABLE jobs
+(
+  job_id VARCHAR(10) PRIMARY KEY,
+  job_title VARCHAR(50) NOT NULL,
+  min_sal NUMBER(5,2) NOT NULL,
+  max_sal NUMBER(5,2) NOT NULL
+);
+
+INSERT INTO jobs VALUES
+('IT_PROG', 'Programmer', 4000, 10000),
+('MK_MGR', 'Marketing Manager', 9000, 15000),
+('FI_MGR', 'Finance Manager', 8200, 12000),
+('FI_ACC', 'Accountant', 4200, 9000),
+('LEC', 'Lecturer', 6000, 17000),
+('COMP_OP', 'Computer Operator', 1500, 3000);
+
+INSERT INTO emp VALUES
+(101, 'Smith', 800, 'IT_PROG', 20),
+(102, 'Adama', 1100, 'MK_MGR', 20),
+(103, 'Anamika', 2975, 'FI_MGR', 30),
+(104, 'Aman', 3000, 'FI_ACC', 15),
+(105, 'Anita', 5000, 'LEC', 10),
+(106, 'Sneha', 2450, 'COMP_OP', 10),
+(107, 'Anamika', 2975, 'FI_MGR', 30);
+
+(1) Write a query to display the current date. Label the column Date.
+
+SELECT CURRENT_DATE AS Date;
+
+(2) For each employee, display the employee number, job, salary, and salary increased by 15% and expressed as a whole number. Label the column New Salary
+
+SELECT emp_no, job_title, emp_sal, ROUND(emp_sal * 1.15) AS New_Salary
+FROM emp
+JOIN jobs
+ON emp.job_id = jobs.job_id;
+
+(3) Modify your query to add a column that subtracts the old salary from the new salary. Label the column Increase
+
+SELECT emp_no, job_title, emp_sal, ROUND(emp_sal * 1.15) AS New_Salary, ROUND(emp_sal * 1.15) - emp_sal AS Increase
+FROM emp
+JOIN jobs
+ON emp.job_id = jobs.job_id;
+
+
+
+
+
+
+
+
+
+
+
+
+
+Question 5 --->
+
+Explain and implement joins and use suitable tables
+
+
+Answer -->
+
+Joins are a fundamental concept in relational databases that allow you to combine data from two or more tables based on a related column between them. They are essential for retrieving comprehensive information from a database that spans multiple tables.
+
+There are various types of joins, each serving a specific purpose:
+
+i) Inner Join: This join returns only rows that have matching values in both tables. It is the most common type of join.
+
+ii) Left Join: This join returns all rows from the left table and the matched rows from the right table. If there is no match in the right table, null values are returned for the corresponding columns.
+
+iii) Right Join: This join returns all rows from the right table and the matched rows from the left table. If there is no match in the left table, null values are returned for the corresponding columns.
+
+iv) Full Join: This join returns all rows from both tables, regardless of whether there is a match in the other table. If there is no match, null values are returned for the corresponding columns.
+
+v) Self Join: This join allows you to join a table to itself. It is useful for extracting hierarchical data or comparing rows within the same table.
+
+
+To illustrate the use of joins, consider the following tables:
+
+Customers (customer_id, name, address)
+Orders (order_id, customer_id, product_id, quantity)
+Products (product_id, name, price)
+
+
+Example 1: Inner Join
+
+To retrieve a list of customers along with the orders they have placed, you can use an inner join:
+
+SELECT c.name, o.order_id, o.product_id, o.quantity
+FROM Customers c
+INNER JOIN Orders o
+ON c.customer_id = o.customer_id;
+
+
+Example 2: Left Join
+
+To retrieve a list of all customers, including those who have not placed any orders, you can use a left join:
+
+SELECT c.name, o.order_id
+FROM Customers c
+LEFT JOIN Orders o
+ON c.customer_id = o.customer_id;
+
+
+Example 3: Right Join
+
+To retrieve a list of all orders, including those with no associated customer information, you can use a right join:
+
+SELECT o.order_id, c.name
+FROM Orders o
+RIGHT JOIN Customers c
+ON o.customer_id = c.customer_id;
+
+
+Example 4: Full Join
+
+To retrieve a complete list of orders, including those with no associated customer information and customers with no orders, you can use a full join:
+
+SELECT o.order_id, c.name
+FROM Orders o
+FULL OUTER JOIN Customers c
+ON o.customer_id = c.customer_id;
+
+
+Example 5: Self Join
+
+To find managers who report to other managers, you can use a self join:
+
+SELECT m1.manager_id, m2.manager_id
+FROM Managers m1
+INNER JOIN Managers m2
+ON m1.reports_to = m2.manager_id;
+
+
+Joins are powerful tools for data retrieval and manipulation in relational databases. They allow you to combine information from multiple tables to gain a comprehensive understanding of your data.
+
+
+
+This query will return a result set that includes the following columns:
+
+customer_id: The customer's ID number
+first_name: The customer's first name
+last_name: The customer's last name
+order_id: The order's ID number
+order_date: The date the order was placed
+order_total: The total amount of the order
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Question 6 --->
+
+Apply the concept of Aggregating Data using Group functions use suitable tables.
+
+
+Answer -->
+
+Aggregating data using group functions is an essential technique for summarizing and analyzing large datasets in relational databases. Group functions allow you to group rows based on common criteria and perform calculations on those groups. This enables you to identify trends, patterns, and overall statistics within your data.
+
+
+To illustrate the concept of aggregating data using group functions, consider the following table:
+
+Orders (order_id, customer_id, product_id, quantity, price)
+
+
+
+Example 1: Calculate the total sales for each product
+
+To determine the total sales for each product, you can use the SUM aggregate function:
+
+SELECT product_id, SUM(quantity * price) AS total_sales
+FROM Orders
+GROUP BY product_id;
+
+
+
+Example 2: Find the average order quantity for each customer
+
+To calculate the average order quantity for each customer, you can use the AVG aggregate function:
+
+
+SELECT customer_id, AVG(quantity) AS avg_order_quantity
+FROM Orders
+GROUP BY customer_id;
+
+
+Example 3: Count the number of orders placed in each month
+
+To count the number of orders placed in each month, you can use the COUNT aggregate function and extract the month from the order date:
+
+SELECT EXTRACT(MONTH FROM order_date) AS order_month, COUNT(order_id) AS order_count
+FROM Orders
+GROUP BY EXTRACT(MONTH FROM order_date);
+
+
+Example 4: Find the maximum order amount for each customer
+
+To identify the maximum order amount for each customer, you can use the MAX aggregate function:
+
+
+SELECT customer_id, MAX(quantity * price) AS max_order_amount
+FROM Orders
+GROUP BY customer_id;
+
+
+Example 5: Calculate the minimum order quantity for each product category
+
+To determine the minimum order quantity for each product category, you can use the MIN aggregate function and join the Orders table with a Products table that contains product category information:
+
+
+SELECT p.product_category, MIN(o.quantity) AS min_order_quantity
+FROM Orders o
+JOIN Products p
+ON o.product_id = p.product_id
+GROUP BY p.product_category;
+
+
+
+These examples demonstrate the versatility of group functions in aggregating and analyzing data from relational databases. By combining group functions with appropriate filtering and joins, you can extract valuable insights from your data to make informed decisions.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Question 7 --->
+
+solve and implement queries using the concept of sub query
+
+
+
+Answer -->
+
+
+
+Subqueries are a powerful tool in SQL that allow you to embed queries within other queries. They are particularly useful for retrieving data that is dependent on the results of another query. Subqueries can be used in various ways, including:
+
+Filtering: You can use subqueries to filter the results of a main query based on conditions derived from another query. For instance, you can find all orders placed by customers who have a total purchase amount exceeding a certain value.
+
+Correlating Data: Subqueries can be used to correlate data across multiple tables. For example, you can identify employees who manage other employees with higher salaries.
+
+Aggregating Data: Subqueries can be used to aggregate data from one query and use that information in another query. For instance, you can calculate the average order value for each product and then find the product with the highest average order value.
+
+
+
+Example 1: Filter Orders by Customer Purchase History
+
+To retrieve orders placed by customers who have made a total purchase exceeding $10,000, you can use a correlated subquery:
+
+
+SELECT o.order_id, o.customer_id, o.product_id, o.quantity, o.price
+FROM Orders o
+WHERE o.customer_id IN (
+  SELECT c.customer_id
+  FROM Customers c
+  JOIN Orders o2
+  ON c.customer_id = o2.customer_id
+  GROUP BY c.customer_id
+  HAVING SUM(o2.quantity * o2.price) > 10000
+);
+
+
+
+Example 2: Identify Managers with Higher-Paid Subordinates
+
+To identify managers who oversee employees with higher salaries, you can use a correlated subquery:
+
+
+SELECT m.manager_id, m.name, s.subordinate_id, s.salary
+FROM Managers m
+JOIN Subordinates s
+ON m.manager_id = s.manager_id
+WHERE s.salary > (
+  SELECT salary
+  FROM Employees e
+  WHERE e.employee_id = m.manager_id
+);
+
+
+
+Example 3: Find Products with the Highest Average Order Value
+
+To determine the product with the highest average order value, you can use a subquery to calculate the average order value for each product and then find the product with the highest average value:
+
+
+SELECT p.product_id, p.name, MAX(avg_order_value) AS highest_avg_order_value
+FROM Products p
+JOIN (
+  SELECT product_id, AVG(quantity * price) AS avg_order_value
+  FROM Orders
+  GROUP BY product_id
+) o
+ON p.product_id = o.product_id
+GROUP BY p.product_id, p.name;
+
+
+
+These examples demonstrate the power and flexibility of subqueries in SQL. They allow you to perform sophisticated data manipulation and analysis by nesting queries within other queries. By mastering subqueries, you can gain deeper insights from your data and make informed decisions.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Question 8 --->
+
+Use Manipulating Data, consider and create tables as per requirements.
+(1) Give 10% interest to all depositors. 
+(2) Give 10% interest to all depositors having branch pune.
+(3) Give 10% interest to all depositors living in nagpur and having branch city as ramtek
+
+
+Answer -->
+
+
+
+CREATE TABLE deposit(
+  a_no VARCHAR(5) PRIMARY KEY,
+  cname VARCHAR(20) NOT NULL,
+  bname VARCHAR(20) NOT NULL,
+  amount NUMBER(8,2) NOT NULL,
+  a_date DATE NOT NULL
+);
+
+
+Query 1: Give 10% interest to all depositors
+
+UPDATE deposit
+SET amount = (amount + (amount * 0.10))
+WHERE bname = 'pune';
+
+
+This query will update the amount column in the deposit table by adding 10% interest to all depositors.
+
+Query 2: Give 10% interest to all depositors living in nagpur and having branch city as ramtek
+
+
+UPDATE deposit
+SET amount = (amount + (amount * 0.10))
+WHERE cname = 'nagpur' AND bname = 'ramtek';
+
+
+This query will update the amount column in the deposit table by adding 10% interest to all depositors who live in nagpur and have their branch city as ramtek.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Question 9 --->
+
+To Perform Operations Using PL/SQL. 
+1. Write a PL/SQL Block that will get the salary of employee with employee number 
+‘105’ and display it on the Screen 
+2. Write a PL/SQL block that prints 1 to 5 numbers Using WHILE Loop Statement
+
+
+Answer -->
+
+
+1. PL/SQL Block to Get Salary of Employee with Employee Number '105'
+
+
+DECLARE
+  emp_salary NUMBER;
+BEGIN
+  SELECT emp_sal INTO emp_salary
+  FROM emp
+  WHERE emp_no = 105;
+
+  DBMS_OUTPUT.PUT_LINE('Salary of employee with employee number 105: ' || emp_salary);
+END;
+
+
+This block declares a variable emp_salary to store the retrieved salary. It then selects the salary of employee with employee number 105 from the emp table and stores it in the emp_salary variable. Finally, it displays the retrieved salary using the DBMS_OUTPUT.PUT_LINE procedure.
+
+2. PL/SQL Block to Print 1 to 5 Numbers Using WHILE Loop Statement
+
+
+DECLARE
+  i NUMBER := 1;
+BEGIN
+  WHILE i <= 5 LOOP
+    DBMS_OUTPUT.PUT_LINE(i);
+    i := i + 1;
+  END LOOP;
+END;
+
+
+This block declares a loop counter variable i and initializes it to 1. It then enters a WHILE loop that iterates until the value of i is less than or equal to 5. Inside the loop, it prints the current value of i using the DBMS_OUTPUT.PUT_LINE procedure and then increments i by 1. This effectively prints the numbers 1 to 5.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Question 10 --->
+
+1 Write a PL/SQL block that implements Implicit Cursor. 
+2 Write a PL/SQL block that implements Explicit Cursor. 
+
+
+Answer -->
+
+1. PL/SQL Block that Implements Implicit Cursor
+
+
+DECLARE
+  emp_name VARCHAR(30);
+  emp_sal NUMBER;
+BEGIN
+  -- Fetch employee name and salary for employee number 105
+  SELECT emp_name, emp_sal
+  INTO emp_name, emp_sal
+  FROM emp
+  WHERE emp_no = 105;
+
+  -- Display retrieved employee information
+  DBMS_OUTPUT.PUT_LINE('Employee Name: ' || emp_name);
+  DBMS_OUTPUT.PUT_LINE('Employee Salary: ' || emp_sal);
+END;
+
+
+
+This block uses an implicit cursor to retrieve employee name and salary for employee number 105. It directly selects the data into variables emp_name and emp_sal without explicitly declaring a cursor.
+
+2. PL/SQL Block that Implements Explicit Cursor
+
+
+DECLARE
+  cursor emp_cursor IS
+    SELECT emp_name, emp_sal
+    FROM emp;
+  emp_name VARCHAR(30);
+  emp_sal NUMBER;
+BEGIN
+  -- Open the explicit cursor
+  OPEN emp_cursor;
+
+  -- Fetch employee name and salary for each employee
+  FETCH emp_cursor INTO emp_name, emp_sal;
+
+  -- Process and display retrieved employee information
+  LOOP
+    DBMS_OUTPUT.PUT_LINE('Employee Name: ' || emp_name);
+    DBMS_OUTPUT.PUT_LINE('Employee Salary: ' || emp_sal);
+
+    EXIT WHEN emp_cursor%NOTFOUND;
+
+    FETCH emp_cursor INTO emp_name, emp_sal;
+  END LOOP;
+
+  -- Close the explicit cursor
+  CLOSE emp_cursor;
+END;
+
+
+
+This block explicitly declares a cursor emp_cursor using the CURSOR IS clause. It then opens the cursor, fetches employee name and salary for each employee using the FETCH procedure, and processes and displays the retrieved information. Finally, it closes the cursor to release resources.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Question 11 --->
+
+Write a PL/SQL block that implements Function. 
+Write a PL/SQL block that implements AFTER UPDATE TRIGGER.
+
+
+Answer -->
+
+
+1. PL/SQL Block that Implements Function
+
+
+CREATE OR REPLACE FUNCTION calculate_bonus(emp_sal NUMBER)
+RETURN NUMBER
+AS
+BEGIN
+  IF emp_sal <= 2000 THEN
+    RETURN emp_sal * 0.10;
+  ELSIF emp_sal <= 3000 THEN
+    RETURN emp_sal * 0.15;
+  ELSE
+    RETURN emp_sal * 0.20;
+  END IF;
+END;
+
+
+This function takes an employee's salary as input and calculates and returns their bonus based on their salary range. It uses an IF-ELSE block to determine the appropriate bonus percentage and returns the calculated bonus.
+
+
+
+2. PL/SQL Block that Implements AFTER UPDATE TRIGGER
+
+CREATE OR REPLACE TRIGGER update_employee_salary_history
+AFTER UPDATE OF emp_sal ON emp
+FOR EACH ROW
+BEGIN
+  INSERT INTO employee_salary_history (emp_no, emp_name, emp_sal, update_date)
+  VALUES NEW.emp_no, NEW.emp_name, NEW.emp_sal, SYSDATE;
+END;
+
+
+
+This trigger fires after an employee's salary is updated in the emp table. It inserts a record into the employee_salary_history table to track the employee's salary history. The NEW pseudo-record refers to the updated row after the UPDATE statement.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Question 12 --->
+
+
+Write a PL/SQL block that implements BEFORE UPDATE TRIGGER
+
+
+Answer -->
+
+
+CREATE OR REPLACE TRIGGER validate_employee_salary_update
+BEFORE UPDATE OF emp_sal ON emp
+FOR EACH ROW
+BEGIN
+  IF NEW.emp_sal < 1500 THEN
+    RAISE_APPLICATION_ERROR(-20000, 'Employee salary cannot be less than 1500');
+  END IF;
+END;
+
+
+This trigger fires before an employee's salary is updated in the emp table. It checks if the new salary is less than 1500. If it is, it raises an application error to prevent the update from taking place.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Question 13 --->
+
+Implement nested sub queries. Perform a test for set membership (in, not in), set 
+comparison (<some, >=some, <all etc.) and set cardinality (unique, not unique).
+Assume suitable tables.
+
+
+Answer -->
+
+
+Nested Subqueries
+
+
+-- Find employees who manage other employees with higher salaries
+SELECT m.manager_id, m.name, s.subordinate_id, s.salary
+FROM Managers m
+JOIN Subordinates s
+ON m.manager_id = s.manager_id
+WHERE s.salary > (
+  SELECT salary
+  FROM Employees e
+  WHERE e.employee_id = m.manager_id
+);
+
+
+In this example, the subquery selects the salary of the manager and compares it to the salary of the subordinate. Only subordinates with higher salaries are included in the results.
+
+Set Membership
+
+
+-- Find customers who have placed an order for product ID 101
+SELECT c.customer_id, c.name
+FROM Customers c
+JOIN Orders o
+ON c.customer_id = o.customer_id
+WHERE o.product_id IN (101);
+
+
+In this example, the IN operator is used to check if the product ID 101 is among the product IDs in the Orders table. Only customers who have ordered product ID 101 are included in the results.
+
+Set Comparison
+
+
+-- Find products with a higher average order quantity than the average order quantity for all products
+SELECT p.product_id, p.name, avg_order_quantity
+FROM Products p
+JOIN (
+  SELECT product_id, AVG(quantity) AS avg_order_quantity
+  FROM Orders
+  GROUP BY product_id
+) o
+ON p.product_id = o.product_id
+WHERE avg_order_quantity > (
+  SELECT AVG(quantity) AS avg_order_quantity
+  FROM Orders
+);
+
+
+In this example, the subquery calculates the average order quantity for all products. The main query then compares the average order quantity for each product to the overall average order quantity. Only products with a higher average order quantity are included in the results.
+
+Set Cardinality
+
+
+-- Find unique employee names
+SELECT DISTINCT emp_name
+FROM Employees;
+
+
+In this example, the DISTINCT keyword is used to eliminate duplicate employee names from the results. Only unique employee names are included.
+
+-- Find employees with duplicate names
+SELECT emp_name
+FROM Employees
+GROUP BY emp_name
+HAVING COUNT(*) > 1;
+
+
+In this example, the GROUP BY clause groups employees by their name. The HAVING clause then filters the results to include only groups with more than one employee (indicating duplicate names).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Question 14 --->
+
+Execute DDL statements which demonstrate the use of views. Try to update the base 
+table using its corresponding view. Also consider restrictions on updatable views and 
+perform view creation from multiple tables.
+
+
+
+Answer -->
+
+Creating a view from a single table:
+
+CREATE VIEW customer_details AS
+SELECT customer_id, customer_name, email, phone_number
+FROM customers;
+
+Creating a view from multiple tables:
+
+CREATE VIEW customer_orders AS
+SELECT c.customer_id, c.customer_name, o.order_id, o.order_date, o.total_amount
+FROM customers AS c
+JOIN orders AS o ON c.customer_id = o.customer_id;
+
+
+Updating a base table using its corresponding view:
+
+UPDATE customers
+SET email = 'newemail@example.com'
+FROM customers AS c
+JOIN customer_details AS cd ON c.customer_id = cd.customer_id
+WHERE cd.customer_name = 'John Doe';
+
+
+Restrictions on updatable views:
+
+A view cannot be updated if it contains aggregate functions (e.g., SUM, AVG, COUNT).
+A view cannot be updated if it contains multiple tables and the UPDATE statement attempts to modify data from more than one table.
+View creation from multiple tables with different joins:
+
+
+
+CREATE VIEW customer_orders_grouped_by_status AS
+SELECT c.customer_id, c.customer_name, o.order_status, COUNT(*) AS order_count
+FROM customers AS c
+JOIN orders AS o ON c.customer_id = o.customer_id
+GROUP BY c.customer_id, c.customer_name, o.order_status;
+
+
+In this example, we are creating a view that groups customer orders by their status and counts the number of orders for each customer and status combination. This view cannot be updated directly because it contains an aggregate function (COUNT).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Question 15 --->
+
+1. Write a PL/SQL block that implements Function. 
+2. Write a PL/SQL block that implements AFTER INSERT TRIGGER.
+
+
+
+Answer -->
+
+
+1. PL/SQL block that implements a function:
+
+
+CREATE OR REPLACE FUNCTION calculate_bonus(salary NUMBER)
+RETURN NUMBER IS
+BEGIN
+  IF salary <= 5000 THEN
+    RETURN salary * 0.1;
+  ELSIF salary <= 10000 THEN
+    RETURN salary * 0.15;
+  ELSE
+    RETURN salary * 0.2;
+  END IF;
+END;
+/
+
+
+
+This function calculates the bonus for an employee based on their salary. The bonus is 10% for salaries less than or equal to 5000, 15% for salaries less than or equal to 10000, and 20% for salaries greater than 10000.
+
+
+
+
+2. PL/SQL block that implements an AFTER INSERT TRIGGER:
+
+
+CREATE OR REPLACE TRIGGER trg_after_insert_employees
+AFTER INSERT ON employees
+FOR EACH ROW
+BEGIN
+  DBMS_OUTPUT.PUT_LINE('A new employee has been inserted: ' || :NEW.ename);
+END;
+/
+
+
+This trigger will print a message to the console whenever a new employee is inserted into the EMPLOYEES table.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Question 16 --->
+
+Write a PL/SQL block that implements BEFORE DELETE TRIGGER 
+Write a trigger to check the salary is not Zero or Negative.
+Write a Trigger that check the employee resides in a city 'Pune'
+
+
+Answer -->
+
+
+
+PL/SQL block that implements a BEFORE DELETE TRIGGER to check the salary is not Zero or Negative:
+
+
+CREATE OR REPLACE TRIGGER trg_before_delete_employees
+BEFORE DELETE ON employees
+FOR EACH ROW
+BEGIN
+  IF :OLD.salary <= 0 THEN
+    RAISE_APPLICATION_ERROR(-20001, 'Salary cannot be zero or negative.');
+  END IF;
+END;
+/
+
+
+And here is a trigger to check if the employee resides in a city 'Pune':
+
+
+CREATE OR REPLACE TRIGGER trg_before_delete_employees
+BEFORE DELETE ON employees
+FOR EACH ROW
+BEGIN
+  IF :OLD.city != 'Pune' THEN
+    RAISE_APPLICATION_ERROR(-20002, 'Employee must reside in Pune.');
+  END IF;
+END;
+/
+
+
+
+These triggers will prevent the deletion of any employee with a salary of zero or negative, or an employee who does not reside in the city of Pune.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Question 17 --->
+
+Create a database with suitable example using MongoDB and implement
+- Inserting and saving document (batch insert, insert validation)
+- Removing document
+- Updating document (document replacement, using modifiers, upserts, updating
+documents, returning updated documents)
+
+
+Answer -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Question 18 --->
+
+Execute at least 10 queries on any suitable MongoDB database
+
+
+Answer -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Question 19 --->
+
+Execute at least 10 queries on any suitable MongoDB database that demonstrates 
+following:
+$ where queries
+CRUD Database commands
+
+
+Answer -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Question 20 --->
+
+Implement Mongodb CRUD operations
+
+
+Answer -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Question 21 --->
+
+Execute DDL statements which demonstrate the use of views. Try to update the base 
+table using its corresponding view. Also consider restrictions on updatable views and 
+perform view creation from multiple tables.
+
+
+Answer -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Question 22 --->
+
+Create a database with suitable example using MongoDB and implement
+- Inserting and saving document (batch insert, insert validation)
+- Removing document
+- Updating document
+
+
+Answer -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Question 23 --->
+
+Consider the table and solve the quries:
+Sailors( sid, sname, rating, age)
+Boats(bid, bname,color) 
+Reserves(sid,bid,day)
+1. Find the names of sailors who have reserved boat number 103
+2. Find the names of sailors who have never reserved boat number 103
+3. Find the names of sailors who have reserved a red boat
+4. Find the colors of boats reserved by Lubber
+
+
+
+Answer -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Question 24 -->
+
+Consider the table and solve the quries:
+Sailors( sid, sname, rating, age)
+Boats(bid, bname,color) 
+Reserves(sid,bid,day)
+1. Find the names of sailors who have reserved a red or a green boat
+2. Find the names of sailors who have reserved both a red and a green boat
+3. Find the names of sailors who have reserved at least two different boats
+4. Find the sids of silors with age over 20 who have not reserved a red boat
+
+
+
+
+Answer -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Question 25 --->
+
+Flights(flno, from, to, distance, departs, arrives, price)
+Aircraft(aid, aname, cruisingrange)
+Certified(eid, aid)
+Employees(eid, ename, salary)
+1. Compute the difference between the average salary of a pilot and the average
+salary of all employees (including pilots).
+2. Print the name and salary of every nonpilot whose salary is more than the average 
+salary for pilots.
+3. Print the names of employees who are certified only on aircrafts with cruising
+range longer than 1000 miles.
+
+
+
+Answer -->
+
+
+
+
+
+
+
+
+

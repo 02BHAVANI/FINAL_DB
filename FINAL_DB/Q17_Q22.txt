@@ -1,0 +1,109 @@
+//Create a database and collection:
+
+mongo
+use exampleDatabase
+db.createCollection("products")
+
+// Insert a single document:
+
+db.products.insertOne({
+  "name": "Laptop",
+  "price": 1200,
+  "category": "electronics"
+})
+
+//Insert multiple documents (batch insert):
+
+db.products.insertMany([
+  {
+    "name": "Smartphone",
+    "price": 600,
+    "category": "electronics"
+  },
+  {
+    "name": "Book",
+    "price": 20,
+    "category": "books"
+  },
+  {
+    "name": "Shirt",
+    "price": 30,
+    "category": "apparel"
+  }
+])
+
+
+//Insert document with validation:
+
+db.products.insertOne({
+  "name": "Headphones",
+  "price": 150,
+  "category": "electronics"
+}, {
+  writeConcern: {
+    w: 1,
+    j: true
+  }
+})
+
+
+//Remove a document by ID:
+
+db.products.deleteOne({
+  "_id": ObjectId("637f6772d9714e147791356f")
+})
+
+
+//Remove documents by criteria:
+
+db.products.deleteMany({
+  "category": "books"
+})
+
+
+//Update a document by ID:
+
+db.products.updateOne({
+  "_id": ObjectId("637f6772d9714e147791356f")
+}, {
+  $set: {
+    "price": 180,
+    "category": "gadgets"
+  }
+})
+
+
+//Update documents by criteria:
+
+db.products.updateMany({
+  "category": "electronics"
+}, {
+  $inc: {
+    "price": 50
+  }
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

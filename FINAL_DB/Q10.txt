@@ -1,0 +1,88 @@
+/*
+1 Write a PL/SQL block that implements Implicit Cursor. 
+2 Write a PL/SQL block that implements Explicit Cursor.
+*/
+
+1.	Write a PL/SQL block that implements Implicit Cursor. 
+
+
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| s_id       | int         | NO   | PRI | NULL    |       |
+| s_name     | varchar(20) | NO   |     | NULL    |       |
+| yearofhire | date        | YES  |     | NULL    |       |
+| comm_per   | float(10,2) | YES  |     | NULL    |       |
+| city       | varchar(20) | YES  |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+
+Ans:
+
+use sales;
+delimiter //
+Declare v_salesperson_name VARCHAR2(50);
+BEGIN
+    SELECT s_name INTO v_salesperson_name
+    FROM salesperson
+    WHERE s_id = 1;
+
+    DBMS_OUTPUT.PUT_LINE('Salesperson Name: ' || v_salesperson_name);
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('No salesperson found for the specified ID.');
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+END;
+//
+
+
+2.	Write a PL/SQL block that implements Explicit Cursor.  
+
+Ans:
+use sales;
+Delimiter // 
+DECLARE
+    CURSOR salesperson_cursor IS
+        SELECT s_id, s_name FROM salesperson;
+    
+    v_salesperson_id salesperson.s_id%TYPE;
+    v_salesperson_name salesperson.s_name%TYPE;
+BEGIN
+    FOR rec IN salesperson_cursor
+    LOOP
+        
+        v_salesperson_id := rec.s_id;
+        v_salesperson_name := rec.s_name;
+
+        DBMS_OUTPUT.PUT_LINE('Salesperson ID: ' || v_salesperson_id);
+        DBMS_OUTPUT.PUT_LINE('Salesperson Name: ' || v_salesperson_name);
+    END LOOP;
+END;
+//
+
+
+/*
+
+delimiter //
+create procedure proc()
+begin
+	declare v_name varchar(10);
+    declare v_price int;
+    declare v_finished integer default 0;
+    declare c1 cursor for select p_name, list_price from purchase1;
+    declare continue handler for not found set v_finished = 1;
+    open c1;
+    std : LOOP
+		fetch c1 into v_name, v_price;
+        if v_finished = 1 then
+			leave std;
+		end if;
+        select concat(v_name, concat('-',v_price));
+	end loop std;
+    close c1;
+end;
+//
+
+call proc();
+
+*/

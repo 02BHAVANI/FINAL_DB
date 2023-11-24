@@ -1,0 +1,66 @@
+Implement nested sub queries. Perform a test for set membership (in, not in), set comparison (<some, >=some, <all etc.) and set cardinality (unique, not unique). Assume suitable tables. 
+Ans:
+-- Create tables
+CREATE TABLE students (
+    student_id INT PRIMARY KEY,
+    student_name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE courses (
+    course_id INT PRIMARY KEY,
+    course_name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE enrollments (
+    enrollment_id INT PRIMARY KEY,
+    student_id INT,
+    course_id INT,
+    grade INT,
+    FOREIGN KEY (student_id) REFERENCES students(student_id),
+    FOREIGN KEY (course_id) REFERENCES courses(course_id)
+);
+
+-- Insert sample data
+INSERT INTO students VALUES (1, 'Alice');
+INSERT INTO students VALUES (2, 'Bob');
+INSERT INTO students VALUES (3, 'Charlie');
+
+INSERT INTO courses VALUES (101, 'Math');
+INSERT INTO courses VALUES (102, 'English');
+INSERT INTO courses VALUES (103, 'History');
+
+INSERT INTO enrollments VALUES (1, 1, 101, 85);
+INSERT INTO enrollments VALUES (2, 1, 102, 90);
+INSERT INTO enrollments VALUES (3, 2, 101, 75);
+INSERT INTO enrollments VALUES (4, 2, 103, 88);
+INSERT INTO enrollments VALUES (5, 3, 102, 92);
+INSERT INTO enrollments VALUES (6, 3, 103, 78);
+
+-- Set Membership (IN, NOT IN)
+SELECT student_name
+FROM students
+WHERE student_id IN (SELECT student_id FROM enrollments WHERE course_id = 101);
+
+SELECT student_name
+FROM students
+WHERE student_id NOT IN (SELECT student_id FROM enrollments WHERE course_id = 102);
+
+-- Set Comparison (<SOME, >=SOME, <ALL, etc.)
+SELECT student_name
+FROM students
+WHERE grade > SOME (SELECT grade FROM enrollments WHERE course_id = 101);
+
+SELECT student_name
+FROM students
+WHERE grade < ALL (SELECT grade FROM enrollments WHERE course_id = 102);
+
+-- Set Cardinality (UNIQUE, NOT UNIQUE)
+SELECT student_name
+FROM students
+WHERE grade = ALL (SELECT grade FROM enrollments WHERE course_id = 103)
+      AND COUNT(*) = 1;
+
+SELECT student_name
+FROM students
+WHERE grade = ALL (SELECT grade FROM enrollments WHERE course_id = 101)
+      AND COUNT(*) > 1;

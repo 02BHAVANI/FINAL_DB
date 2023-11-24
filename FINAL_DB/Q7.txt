@@ -1,0 +1,39 @@
+CREATE TABLE employees (
+    employee_id INT PRIMARY KEY,
+    employee_name VARCHAR(255),
+    department_id INT,
+    salary DECIMAL(10, 2)
+);
+
+
+INSERT INTO employees (employee_id, employee_name, department_id, salary) VALUES
+(1, 'John Doe', 101, 50000.00),
+(2, 'Jane Smith', 102, 60000.00),
+(3, 'Bob Johnson', 101, 55000.00);
+
+
+//Basic Subquery: Find employees with a salary greater than the average salary:
+
+SELECT employee_name, salary
+FROM employees
+WHERE salary > (SELECT AVG(salary) FROM employees);
+
+//Correlated Subquery: Find employees whose salary is greater than the average salary in //their department:
+
+SELECT employee_name, salary, department_id
+FROM employees e1
+WHERE salary > (SELECT AVG(salary) FROM employees e2 WHERE e1.department_id = e2.department_id);
+
+//Subquery in the FROM clause: Find the department with the highest average salary:
+
+SELECT department_id, AVG(salary) AS avg_salary
+FROM employees
+GROUP BY department_id
+ORDER BY avg_salary DESC
+LIMIT 1;
+
+//having clause
+SELECT department_id, AVG(salary) AS avg_salary
+FROM employees
+GROUP BY department_id
+HAVING AVG(salary) > 55000;

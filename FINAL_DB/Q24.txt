@@ -1,0 +1,80 @@
+-- Create Sailors Table
+CREATE TABLE Sailors (
+    sid INTEGER PRIMARY KEY,
+    sname TEXT,
+    rating INTEGER,
+    age INTEGER
+);
+
+-- Create Boats Table
+CREATE TABLE Boats (
+    bid INTEGER PRIMARY KEY,
+    bname TEXT,
+    color TEXT
+);
+
+-- Create Reserves Table
+CREATE TABLE Reserves (
+    sid INTEGER,
+    bid INTEGER,
+    day TEXT,
+    FOREIGN KEY (sid) REFERENCES Sailors(sid),
+    FOREIGN KEY (bid) REFERENCES Boats(bid)
+);
+
+-- Insert Sample Data into Sailors Table
+INSERT INTO Sailors (sid, sname, rating, age) VALUES
+(101, 'John', 8, 25),
+(102, 'Alice', 7, 30),
+(103, 'Bob', 5, 22);
+
+-- Insert Sample Data into Boats Table
+INSERT INTO Boats (bid, bname, color) VALUES
+(201, 'Boat1', 'Red'),
+(202, 'Boat2', 'Blue'),
+(203, 'Boat3', 'Red');
+
+-- Insert Sample Data into Reserves Table
+INSERT INTO Reserves (sid, bid, day) VALUES
+(101, 201, '2023-01-01'),
+(102, 202, '2023-01-02'),
+(103, 203, '2023-01-03');
+
+
+//1.Find the names of sailors who have reserved a red or a green boat:
+
+SELECT DISTINCT s.sname
+FROM Sailors s
+JOIN Reserves r ON s.sid = r.sid
+JOIN Boats b ON r.bid = b.bid
+WHERE b.color IN ('Red', 'Green');
+
+//2. Find the names of sailors who have reserved both a red and a green boat:
+
+SELECT s.sname
+FROM Sailors s
+JOIN Reserves r ON s.sid = r.sid
+JOIN Boats b ON r.bid = b.bid
+WHERE b.color IN ('Red', 'Green')
+GROUP BY s.sid, s.sname
+HAVING COUNT(DISTINCT b.color) = 2;
+
+//3. Find the names of sailors who have reserved at least two different boats:
+
+SELECT s.sname
+FROM Sailors s
+JOIN Reserves r ON s.sid = r.sid
+JOIN Boats b ON r.bid = b.bid
+GROUP BY s.sid, s.sname
+HAVING COUNT(DISTINCT r.bid) >= 2;
+
+//4. Find the sids of sailors with age over 20 who have not reserved a red boat:
+
+SELECT s.sid
+FROM Sailors s
+WHERE s.age > 20 AND s.sid NOT IN (
+    SELECT r.sid
+    FROM Reserves r
+    JOIN Boats b ON r.bid = b.bid
+    WHERE b.color = 'Red'
+);

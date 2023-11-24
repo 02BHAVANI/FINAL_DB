@@ -1,0 +1,44 @@
+//Create (Insert) Operation:
+//Insert a Single Document:
+
+db.users.insertOne({
+  name: "John Doe",
+  age: 30,
+  city: "New York",
+  isActive: true
+});
+
+//Insert Multiple Documents:
+
+db.users.insertMany([
+  { name: "Jane Smith", age: 25, city: "Los Angeles", isActive: false },
+  { name: "Bob Johnson", age: 35, city: "Chicago", isActive: true },
+  { name: "Alice Brown", age: 28, city: "San Francisco", isActive: false }
+]);
+
+//2. Read Operation:
+//Find All Documents:
+
+db.users.find();
+
+//Find Documents Matching a Condition:
+
+db.users.find({ age: { $gt: 30 } });
+
+//3. Update Operation:
+//Update a Single Document:
+
+db.users.updateOne({ name: "John Doe" }, { $set: { age: 31 } });
+
+//Update Multiple Documents:
+
+db.users.updateMany({ isActive: true }, { $set: { status: "active" } });
+
+//4. Delete Operation:
+//Delete a Single Document:
+
+db.users.deleteOne({ name: "Jane Smith" });
+
+//Delete Multiple Documents:
+
+db.users.deleteMany({ isActive: false });

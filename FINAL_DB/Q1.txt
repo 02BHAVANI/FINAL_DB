@@ -1,0 +1,82 @@
+Question 1 --->
+
+(i)Create tables according to the following definition.
+CREATE TABLE DEPOSIT (ACTNO VARCHAR2(5), CNAME VARCHAR2(18),
+BNAME VARCHAR2(18), AMOUNT NUMBER(8,2) , ADATE DATE); 
+CREATE TABLE BRANCH(BNAME VARCHAR2(18),CITY VARCHAR2(18)); 
+CREATE TABLE CUSTOMERS(CNAME VARCHAR2(19) ,CITY VARCHAR2(18)); 
+CREATE TABLE BORROW(LOANNO VARCHAR2(5), CNAME VARCHAR2(18),
+BNAME VARCHAR2(18), AMOUNT NUMBER (8,2)); 
+(ii) Insert the data for all tables.
+From the above given tables perform the following queries:
+(1) Describe deposit, branch.
+(2) List all data from table DEPOSIT
+(3) List all data from table BORROW. 
+(4) Give account number and amount of depositors.
+
+
+
+Answer -->
+
+(i)
+CREATE TABLE DEPOSIT (
+  ACTNO VARCHAR2(5) PRIMARY KEY,
+  CNAME VARCHAR2(18) NOT NULL,
+  BNAME VARCHAR2(18) NOT NULL,
+  AMOUNT NUMBER(8,2) NOT NULL,
+  ADATE DATE NOT NULL
+);
+
+CREATE TABLE BRANCH(
+  BNAME VARCHAR2(18) PRIMARY KEY,
+  CITY VARCHAR2(18) NOT NULL
+);
+
+CREATE TABLE CUSTOMERS(
+  CNAME VARCHAR2(19) PRIMARY KEY,
+  CITY VARCHAR2(18) NOT NULL
+);
+
+CREATE TABLE BORROW(
+  LOANNO VARCHAR2(5) PRIMARY KEY,
+  CNAME VARCHAR2(18) NOT NULL REFERENCES CUSTOMERS(CNAME),
+  BNAME VARCHAR2(18) NOT NULL REFERENCES BRANCH(BNAME),
+  AMOUNT NUMBER (8,2) NOT NULL
+);
+
+(ii)
+INSERT INTO DEPOSIT VALUES
+('A1234', 'Alice', 'City Bank', 10000.00, '2023-01-01'),
+('B5678', 'Bob', 'State Bank', 20000.00, '2023-02-02'),
+('C9012', 'Charlie', 'National Bank', 30000.00, '2023-03-03');
+
+INSERT INTO BRANCH VALUES
+('City Bank', 'New York'),
+('State Bank', 'Chicago'),
+('National Bank', 'Los Angeles');
+
+INSERT INTO CUSTOMERS VALUES
+('Alice', 'New York'),
+('Bob', 'Chicago'),
+('Charlie', 'Los Angeles'),
+('David', 'San Francisco'),
+('Emily', 'Seattle');
+
+INSERT INTO BORROW VALUES
+('L1234', 'Alice', 'City Bank', 5000.00),
+('L5678', 'Bob', 'State Bank', 10000.00),
+('L9012', 'Charlie', 'National Bank', 15000.00);
+
+
+(1)
+DESCRIBE DEPOSIT;
+DESCRIBE BRANCH;
+
+(2)
+SELECT * FROM DEPOSIT;
+
+(3)
+SELECT * FROM BORROW;
+
+(4)
+SELECT ACTNO, AMOUNT FROM DEPOSIT;

@@ -1,0 +1,38 @@
+CREATE TABLE employees (
+    employee_number INT PRIMARY KEY,
+    employee_name VARCHAR(100),
+    salary DECIMAL(10, 2)
+);
+
+INSERT INTO employees (employee_number, employee_name, salary)
+VALUES
+    (101, 'John Doe', 50000.00),
+    (102, 'Jane Smith', 60000.00),
+    (105, 'Alice Johnson', 75000.00),
+    (110, 'Michael Brown', 80000.00);
+    
+DELIMITER //
+
+CREATE PROCEDURE GetEmployeeSalary()
+BEGIN
+    DECLARE emp_salary DECIMAL(10, 2);
+
+    SELECT salary INTO emp_salary
+    FROM employees
+    WHERE employee_number = 105;
+
+    SELECT CONCAT('Employee 105 has a salary of $', emp_salary) AS 'Employee Salary';
+END //
+DELIMITER ;
+
+call GetEmployeeSalary();
+
+
+/*The salary column is defined with the DECIMAL(10, 2) data type. This means that the column can store numbers with up to 10 digits in total, and 2 of those digits can be after the decimal point. So, for example, it can store values like 12345.67.
+
+Here's a breakdown:
+
+10 is the total number of digits (both before and after the decimal point).
+2 is the number of digits after the decimal point.
+This ensures that the salary values are stored with up to 8 digits before the decimal point and 2 digits after the decimal point. You can adjust these values based on the precision and scale you need for your specific use case.
+*/

@@ -1,0 +1,30 @@
+CREATE TABLE deposit(
+  a_no VARCHAR(5) PRIMARY KEY,
+  cname VARCHAR(20) NOT NULL,
+  bname VARCHAR(20) NOT NULL,
+  amount NUMBER(8,2) NOT NULL,
+  a_date DATE NOT NULL
+);
+
+
+Query 1: Give 10% interest to all depositors
+
+UPDATE deposit
+SET amount = (amount + (amount * 0.10))
+
+
+Query 2: Give 10% interest to all depositors having branch Pune:
+
+UPDATE deposit
+SET amount = (amount + (amount * 0.10))
+WHERE bname = 'pune';
+
+
+This query will update the amount column in the deposit table by adding 10% interest to all depositors.
+
+Query 3: Give 10% interest to all depositors living in nagpur and having branch city as ramtek
+
+
+UPDATE deposit
+SET amount = (amount + (amount * 0.10))
+WHERE cname = 'nagpur' AND bname = 'ramtek';

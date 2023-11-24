@@ -1,0 +1,52 @@
+// Create or switch to the "mydatabase" database
+use mydatabase
+
+// Insert documents into the "users" collection
+db.users.insertMany([
+  { name: "John Doe", age: 30, city: "New York", isActive: true },
+  { name: "Jane Smith", age: 25, city: "Los Angeles", isActive: false },
+  { name: "Bob Johnson", age: 35, city: "Chicago", isActive: true },
+  { name: "Alice Brown", age: 28, city: "San Francisco", isActive: false }
+]);
+
+
+//Queries:
+//Find users where age is greater than 30:
+
+db.users.find({ age: { $gt: 30 } });
+
+//Find users where city is "New York":
+
+db.users.find({ city: "New York" });
+
+//Update the age of Jane Smith to 26:
+
+db.users.updateOne({ name: "Jane Smith" }, { $set: { age: 26 } });
+
+//Delete users where isActive is false:
+
+db.users.deleteMany({ isActive: false });
+
+//Count the number of users in the database:
+
+db.users.countDocuments();
+
+//Find users in Chicago and sort them by age in descending order:
+
+db.users.find({ city: "Chicago" }).sort({ age: -1 });
+
+//Limit the result to 2 users:
+
+db.users.find().limit(2);
+
+//Insert a new user record:
+
+db.users.insertOne({ name: "Eva Green", age: 33, city: "Miami", isActive: true });
+
+//Find users where age is either 25 or 35:
+
+db.users.find({ age: { $in: [25, 35] } });
+
+//Aggregate to get the average age of users:
+
+db.users.aggregate([{ $group: { _id: null, averageAge: { $avg: "$age" } } }]);

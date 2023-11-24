@@ -1,0 +1,48 @@
+//Create Tables:
+
+
+-- Users Table
+CREATE TABLE Users (
+    UserID INT PRIMARY KEY,
+    UserName VARCHAR(255),
+    Age INT
+);
+
+-- Orders Table
+CREATE TABLE Orders (
+    OrderID INT PRIMARY KEY,
+    UserID INT,
+    Product VARCHAR(255),
+    Amount DECIMAL(10, 2),
+    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);
+
+//2. Insert Sample Data:
+
+-- Insert into Users table
+INSERT INTO Users (UserID, UserName, Age) VALUES
+(1, 'John Doe', 30),
+(2, 'Jane Smith', 25);
+
+-- Insert into Orders table
+INSERT INTO Orders (OrderID, UserID, Product, Amount) VALUES
+(101, 1, 'Laptop', 1200.00),
+(102, 2, 'Phone', 800.00);
+
+//3. Create a View from Multiple Tables:
+
+-- Create a view combining Users and Orders information
+CREATE VIEW UserOrdersView AS
+SELECT U.UserID, U.UserName, U.Age, O.OrderID, O.Product, O.Amount
+FROM Users U
+JOIN Orders O ON U.UserID = O.UserID;
+
+//4. Query the View:
+
+-- Query the view
+SELECT * FROM UserOrdersView;
+
+//5. Update Base Table using View (if supported):
+
+-- Update the base table using the view (example, update user age)
+UPDATE UserOrdersView SET Age = 31 WHERE UserID = 1;

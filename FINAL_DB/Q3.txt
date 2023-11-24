@@ -1,0 +1,84 @@
+-- Create Job Table
+CREATE TABLE Job (
+    job_id INTEGER PRIMARY KEY,
+    job_title TEXT,
+    min_sal INTEGER,
+    max_sal INTEGER
+);
+
+-- Create Employee Table
+CREATE TABLE Employee (
+    emp_no INTEGER PRIMARY KEY,
+    emp_name TEXT,
+    emp_sal INTEGER,
+    emp_comm INTEGER,
+    dept_no INTEGER
+);
+
+-- Create Deposit Table
+CREATE TABLE Deposit (
+    a_no INTEGER PRIMARY KEY,
+    cname TEXT,
+    bname TEXT,
+    amount INTEGER,
+    a_date TEXT
+);
+
+-- Create Borrow Table
+CREATE TABLE Borrow (
+    loanno INTEGER PRIMARY KEY,
+    cname TEXT,
+    bname TEXT,
+    amount INTEGER
+);
+
+-- Insert Sample Data into Job Table
+INSERT INTO Job (job_id, job_title, min_sal, max_sal) VALUES
+(1, 'Manager', 5000, 8000),
+(2, 'Clerk', 2500, 4000),
+(3, 'Analyst', 4500, 7000);
+
+-- Insert Sample Data into Employee Table
+INSERT INTO Employee (emp_no, emp_name, emp_sal, emp_comm, dept_no) VALUES
+(101, 'John Doe', 6000, 1000, 10),
+(102, 'Alice Smith', 4000, 500, 20),
+(103, 'Bob Johnson', 5500, 800, 20);
+
+-- Insert Sample Data into Deposit Table
+INSERT INTO Deposit (a_no, cname, bname, amount, a_date) VALUES
+(501, 'Customer1', 'Karolbagh', 1000, '2023-01-15'),
+(502, 'Customer2', 'Vrce', 1500, '2023-01-20'),
+(503, 'Customer3', 'Karolbagh', 2000, '2023-02-05');
+
+-- Insert Sample Data into Borrow Table
+INSERT INTO Borrow (loanno, cname, bname, amount) VALUES
+(601, 'Customer1', 'Karolbagh', 5000),
+(602, 'Customer2', 'Vrce', 3000),
+(603, 'Customer3', 'Karolbagh', 2500);
+
+
+//Queries:
+//1. List total deposit from deposit:
+
+SELECT SUM(amount) AS total_deposit FROM Deposit;
+
+//2. List total loan from Karolbagh branch:
+
+SELECT SUM(amount) AS total_loan_karolbagh
+FROM Borrow
+WHERE bname = 'Karolbagh';
+
+//3. Give maximum loan from branch Vrce:
+
+SELECT MAX(amount) AS max_loan_vrce
+FROM Borrow
+WHERE bname = 'Vrce';
+
+/4. Count total number of customers:
+
+SELECT COUNT(DISTINCT cname) AS total_customers
+FROM (
+    SELECT cname FROM Deposit
+    UNION
+    SELECT cname FROM Borrow
+) AS combined_customers;

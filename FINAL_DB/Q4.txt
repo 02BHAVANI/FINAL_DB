@@ -1,0 +1,35 @@
+-- Create Employee Table
+CREATE TABLE Employee (
+    emp_no INTEGER PRIMARY KEY,
+    emp_name TEXT,
+    job TEXT,
+    salary INTEGER
+);
+
+-- Insert Sample Data into Employee Table
+INSERT INTO Employee (emp_no, emp_name, job, salary) VALUES
+(101, 'John Doe', 'Manager', 60000),
+(102, 'Alice Smith', 'Clerk', 40000),
+(103, 'Bob Johnson', 'Analyst', 55000);
+
+//Queries:
+//1. Write a query to display the current date. Label the column Date.
+
+SELECT DATE('now') AS Date;
+
+//2. For each employee, display the employee number, job, salary, and salary increased by 15% //and expressed as a whole number. Label the column New Salary.
+
+SELECT emp_no, job, salary, ROUND(salary * 1.15) AS "New Salary"
+FROM Employee;
+
+//3. Modify your query to add a column that subtracts the old salary from the new salary. //Label the column Increase.
+
+SELECT emp_no, job, salary, ROUND(salary * 1.15) AS "New Salary", ROUND(salary * 0.15) AS Increase
+FROM Employee;
+
+//Additional Inserts:
+
+INSERT INTO Employee (emp_no, emp_name, job, salary) VALUES
+(104, 'Eva Green', 'Manager', 70000),
+(105, 'Charlie White', 'Clerk', 45000),
+(106, 'Grace Brown', 'Analyst', 60000);

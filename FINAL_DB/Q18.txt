@@ -1,0 +1,53 @@
+show dbs
+
+// Insert documents into the "users" collection
+db.users.insertMany([
+  { name: "Jane Smith", age: 25, city: "Los Angeles" },
+  { name: "Bob Johnson", age: 35, city: "Chicago" },
+  { name: "Alice Brown", age: 28, city: "San Francisco" },
+  { name: "Charlie White", age: 32, city: "Seattle" }
+]);
+
+
+//1)insert 
+
+db.collection.insertOne({ name: "John Doe", age: 30, city: "New York" });
+
+//2)Find Documents:
+
+db.collection.find({ city: "New York" });
+
+//3)Update Document:
+
+db.collection.updateOne({ name: "John Doe" }, { $set: { age: 31 } });
+
+//4)Remove Document:
+
+db.collection.deleteOne({ name: "John Doe" });
+
+//5)Count Documents:
+
+db.collection.countDocuments({ city: "New York" });
+
+//6)Filter with AND condition:
+
+db.collection.find({ age: { $gt: 25 }, city: "New York" });
+
+//7)Filter with OR condition:
+
+db.collection.find({ $or: [{ age: { $lt: 30 } }, { city: "Boston" }] });
+
+//8)Sort Documents:
+
+db.collection.find().sort({ age: 1 });
+
+//9)Limit Results:
+
+db.collection.find().limit(5);
+
+//10)Aggregate:
+
+db.collection.aggregate([
+  { $group: { _id: "$city", total: { $sum: 1 } } },
+  { $sort: { total: -1 } }
+]);

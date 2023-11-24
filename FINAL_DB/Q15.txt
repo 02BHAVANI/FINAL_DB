@@ -1,0 +1,60 @@
+DELIMITER //
+
+CREATE FUNCTION CalculateTotalSalary(hourly_wage DECIMAL(10, 2), hours_worked INT)
+RETURNS DECIMAL(10, 2)
+BEGIN
+    DECLARE total_salary DECIMAL(10, 2);
+
+    -- Calculate total salary
+    SET total_salary = hourly_wage * hours_worked;
+
+    RETURN total_salary;
+END //
+DELIMITER ;
+
+SELECT CalculateTotalSalary(15.50, 40) AS 'Total Salary';
+
+
+
+b
+
+
+
+
+-- Create the employees table
+CREATE TABLE employees (
+    emp_id INT PRIMARY KEY,
+    emp_name VARCHAR(50),
+    emp_department VARCHAR(50),
+    emp_salary DECIMAL(10, 2)
+);
+
+-- Create the employees_audit table to track inserted rows
+CREATE TABLE employees_audit (
+    audit_id INT AUTO_INCREMENT PRIMARY KEY,
+    emp_id INT,
+    emp_name VARCHAR(50),
+    emp_department VARCHAR(50),
+    emp_salary DECIMAL(10, 2),
+    audit_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create an AFTER INSERT trigger to track inserted rows
+DELIMITER //
+
+CREATE TRIGGER after_employee_insert
+AFTER INSERT ON employees
+FOR EACH ROW
+BEGIN
+    INSERT INTO employees_audit (emp_id, emp_name, emp_department, emp_salary)
+    VALUES (NEW.emp_id, NEW.emp_name, NEW.emp_department, NEW.emp_salary);
+END //
+DELIMITER ;
+
+
+
+INSERT INTO employees (emp_id, emp_name, emp_department, emp_salary)
+VALUES (1, 'John Doe', 'IT', 50000.00);
+
+
+SELECT * FROM employees_audit;

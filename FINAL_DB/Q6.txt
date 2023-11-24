@@ -1,0 +1,71 @@
+//Aggregating data using group functions is an essential technique for summarizing and //analyzing large datasets in relational databases. Group functions allow you to group rows //based on common criteria and perform calculations on those groups. This enables you to //identify trends, patterns, and overall statistics within your data.
+
+
+//To illustrate the concept of aggregating data using group functions, consider the //following table:
+
+Orders (order_id, customer_id, product_id, quantity, price)
+
+CREATE TABLE Orders (
+    order_id INT PRIMARY KEY,
+    customer_id INT,
+    product_id INT,
+    quantity INT,
+    price DECIMAL(10, 2)
+);
+
+INSERT INTO Orders (order_id, customer_id, product_id, quantity, price)
+VALUES
+    (1, 101, 201, 5, 50.00),
+    (2, 102, 202, 3, 30.00),
+    (3, 103, 203, 2, 25.00);
+
+Example 1: Calculate the total sales for each product
+
+To determine the total sales for each product, you can use the SUM aggregate function:
+
+SELECT product_id, SUM(quantity * price) AS total_sales
+FROM Orders
+GROUP BY product_id;
+
+
+
+Example 2: Find the average order quantity for each customer
+
+To calculate the average order quantity for each customer, you can use the AVG aggregate function:
+
+
+SELECT customer_id, AVG(quantity) AS avg_order_quantity
+FROM Orders
+GROUP BY customer_id;
+
+
+Example 3: Count the number of orders placed in each month
+
+To count the number of orders placed in each month, you can use the COUNT aggregate function and extract the month from the order date:
+
+SELECT EXTRACT(MONTH FROM order_date) AS order_month, COUNT(order_id) AS order_count
+FROM Orders
+GROUP BY EXTRACT(MONTH FROM order_date);
+
+
+Example 4: Find the maximum order amount for each customer
+
+To identify the maximum order amount for each customer, you can use the MAX aggregate function:
+
+
+SELECT customer_id, MAX(quantity * price) AS max_order_amount
+FROM Orders
+GROUP BY customer_id;
+
+
+Example 5: Calculate the minimum order quantity for each product category
+
+To determine the minimum order quantity for each product category, you can use the MIN aggregate function and join the Orders table with a Products table that contains product category information:
+
+
+SELECT p.product_category, MIN(o.quantity) AS min_order_quantity
+FROM Orders o
+JOIN Products p
+ON o.product_id = p.product_id
+GROUP BY p.product_category;
+

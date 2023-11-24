@@ -1,0 +1,83 @@
+-- Create Flights Table
+CREATE TABLE Flights (
+    flno INTEGER PRIMARY KEY,
+    "from" TEXT,
+    "to" TEXT,
+    distance INTEGER,
+    departs TEXT,
+    arrives TEXT,
+    price REAL
+);
+
+-- Create Aircraft Table
+CREATE TABLE Aircraft (
+    aid INTEGER PRIMARY KEY,
+    aname TEXT,
+    cruisingrange INTEGER
+);
+
+-- Create Certified Table
+CREATE TABLE Certified (
+    eid INTEGER,
+    aid INTEGER,
+    PRIMARY KEY (eid, aid),
+    FOREIGN KEY (eid) REFERENCES Employees(eid),
+    FOREIGN KEY (aid) REFERENCES Aircraft(aid)
+);
+
+-- Create Employees Table
+CREATE TABLE Employees (
+    eid INTEGER PRIMARY KEY,
+    ename TEXT,
+    salary REAL
+);
+
+-- Insert Sample Data into Flights Table
+INSERT INTO Flights (flno, "from", "to", distance, departs, arrives, price) VALUES
+(101, 'City1', 'City2', 500, '2023-01-01', '2023-01-02', 300.0),
+(102, 'City2', 'City3', 700, '2023-01-02', '2023-01-03', 400.0),
+(103, 'City3', 'City1', 1000, '2023-01-03', '2023-01-04', 500.0);
+
+-- Insert Sample Data into Aircraft Table
+INSERT INTO Aircraft (aid, aname, cruisingrange) VALUES
+(201, 'Aircraft1', 800),
+(202, 'Aircraft2', 1200),
+(203, 'Aircraft3', 1500);
+
+-- Insert Sample Data into Certified Table
+INSERT INTO Certified (eid, aid) VALUES
+(301, 201),
+(301, 202),
+(302, 203);
+
+-- Insert Sample Data into Employees Table
+INSERT INTO Employees (eid, ename, salary) VALUES
+(301, 'Pilot1', 80000.0),
+(302, 'Pilot2', 75000.0),
+(303, 'Clerk1', 50000.0);
+
+//Queries:
+//1. Compute the difference between the average salary of a pilot and the average salary of //all employees (including pilots):
+
+SELECT AVG(CASE WHEN ename LIKE 'Pilot%' THEN salary ELSE 0 END) -
+       AVG(salary) AS salary_difference
+FROM Employees;
+
+//2. Print the name and salary of every nonpilot whose salary is more than the average //salary for pilots:
+
+SELECT ename, salary
+FROM Employees
+WHERE ename NOT LIKE 'Pilot%' AND salary > (SELECT AVG(salary) FROM Employees WHERE ename LIKE 'Pilot%');
+
+//3. Print the names of employees who are certified only on aircrafts with cruising range //longer than 1000 miles:
+
+SELECT DISTINCT e.ename
+FROM Employees e
+JOIN Certified c ON e.eid = c.eid
+JOIN Aircraft a ON c.aid = a.aid
+WHERE a.cruisingrange > 1000
+  AND NOT EXISTS (
+      SELECT 1
+      FROM Aircraft a2
+      WHERE a2.aid = a.aid AND a2.cruisingrange <= 1000
+  );

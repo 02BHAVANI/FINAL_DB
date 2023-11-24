@@ -1,0 +1,98 @@
+Joins are a fundamental concept in relational databases that allow you to combine data from two or more tables based on a related column between them. They are essential for retrieving comprehensive information from a database that spans multiple tables.
+
+There are various types of joins, each serving a specific purpose:
+
+i) Inner Join: This join returns only rows that have matching values in both tables. It is the most common type of join.
+
+ii) Left Join: This join returns all rows from the left table and the matched rows from the right table. If there is no match in the right table, null values are returned for the corresponding columns.
+
+iii) Right Join: This join returns all rows from the right table and the matched rows from the left table. If there is no match in the left table, null values are returned for the corresponding columns.
+
+iv) Full Join: This join returns all rows from both tables, regardless of whether there is a match in the other table. If there is no match, null values are returned for the corresponding columns.
+
+v) Self Join: This join allows you to join a table to itself. It is useful for extracting hierarchical data or comparing rows within the same table.
+
+
+To illustrate the use of joins, consider the following tables:
+
+Customers (customer_id, name, address)
+Orders (order_id, customer_id, product_id, quantity)
+Products (product_id, name, price)
+
+
+-- Create Customers Table
+CREATE TABLE Customers (
+    customer_id INTEGER PRIMARY KEY,
+    name TEXT,
+    address TEXT
+);
+
+-- Create Products Table
+CREATE TABLE Products (
+    product_id INTEGER PRIMARY KEY,
+    name TEXT,
+    price REAL
+);
+
+-- Create Orders Table
+CREATE TABLE Orders (
+    order_id INTEGER PRIMARY KEY,
+    customer_id INTEGER,
+    product_id INTEGER,
+    quantity INTEGER,
+    FOREIGN KEY (customer_id) REFERENCES Customers(customer_id),
+    FOREIGN KEY (product_id) REFERENCES Products(product_id)
+);
+
+-- Insert Sample Data into Customers Table
+INSERT INTO Customers (customer_id, name, address) VALUES
+(1, 'John Doe', '123 Main St'),
+(2, 'Alice Smith', '456 Oak St'),
+(3, 'Bob Johnson', '789 Pine St');
+
+-- Insert Sample Data into Products Table
+INSERT INTO Products (product_id, name, price) VALUES
+(101, 'Laptop', 1200.0),
+(102, 'Phone', 800.0),
+(103, 'Tablet', 500.0);
+
+-- Insert Sample Data into Orders Table
+INSERT INTO Orders (order_id, customer_id, product_id, quantity) VALUES
+(201, 1, 101, 2),
+(202, 2, 102, 1),
+(203, 3, 103, 3);
+
+
+//1. INNER JOIN:
+SELECT Employee.emp_no, emp_name, job, salary, dept_name
+FROM Employee
+INNER JOIN Department ON Employee.dept_no = Department.dept_no;
+
+//2. LEFT JOIN (or LEFT OUTER JOIN):
+
+SELECT Employee.emp_no, emp_name, job, salary, dept_name
+FROM Employee
+LEFT JOIN Department ON Employee.dept_no = Department.dept_no;
+
+//3. RIGHT JOIN (or RIGHT OUTER JOIN):
+
+SELECT Employee.emp_no, emp_name, job, salary, dept_name
+FROM Employee
+RIGHT JOIN Department ON Employee.dept_no = Department.dept_no;
+
+//4. FULL JOIN (or FULL OUTER JOIN) - SQLite does not directly support FULL JOIN, so we'll //simulate it using a combination of LEFT and RIGHT JOIN:
+
+SELECT Employee.emp_no, emp_name, job, salary, dept_name
+FROM Employee
+LEFT JOIN Department ON Employee.dept_no = Department.dept_no
+UNION
+SELECT Employee.emp_no, emp_name, job, salary, dept_name
+FROM Employee
+RIGHT JOIN Department ON Employee.dept_no = Department.dept_no;
+
+//Additional Inserts:
+
+INSERT INTO Employee (emp_no, emp_name, job, salary, dept_no) VALUES
+(104, 'Eva Green', 'Manager', 70000, 3),
+(105, 'Charlie White', 'Clerk', 45000, 3),
+(106, 'Grace Brown', 'Analyst', 60000, 2);

@@ -1,0 +1,142 @@
+-- Create the employees table
+CREATE TABLE employees (
+    emp_id INT PRIMARY KEY,
+    emp_name VARCHAR(50),
+    emp_department VARCHAR(50),
+    emp_salary DECIMAL(10, 2)
+);
+
+-- Create the employees_audit table to track deleted rows
+CREATE TABLE employees_audit (
+    audit_id INT AUTO_INCREMENT PRIMARY KEY,
+    emp_id INT,
+    emp_name VARCHAR(50),
+    emp_department VARCHAR(50),
+    emp_salary DECIMAL(10, 2),
+    audit_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create a BEFORE DELETE trigger to track deleted rows
+DELIMITER //
+
+CREATE TRIGGER before_employee_delete
+BEFORE DELETE ON employees
+FOR EACH ROW
+BEGIN
+    INSERT INTO employees_audit (emp_id, emp_name, emp_department, emp_salary)
+    VALUES (OLD.emp_id, OLD.emp_name, OLD.emp_department, OLD.emp_salary);
+END //
+DELIMITER ;
+
+select* from employees;
+-- Inserting sample data into the employees table
+INSERT INTO employees (emp_id, emp_name, emp_department, emp_salary)
+VALUES
+    (1, 'John Doe', 'IT', 60000.00),
+    (2, 'Jane Smith', 'HR', 55000.00),
+    (3, 'Alice Johnson', 'Finance', 70000.00);
+    
+    -- Checking the contents of the employees_audit table
+SELECT * FROM employees;
+
+
+-- Deleting a specific record from the employees table (e.g., emp_id = 1)
+DELETE FROM employees WHERE emp_id = 1;
+
+SELECT * FROM employees;
+
+ 
+b
+
+-- Create the employees table
+CREATE TABLE employees (
+    emp_id INT PRIMARY KEY,
+    emp_name VARCHAR(100),
+    salary DECIMAL(10, 2)
+);
+
+-- Create the BEFORE INSERT and BEFORE UPDATE trigger to check salary
+DELIMITER //
+
+CREATE TRIGGER before_employee_salary_check
+BEFORE INSERT ON employees
+FOR EACH ROW
+BEGIN
+    IF NEW.salary <= 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Salary must be a positive value';
+    END IF;
+END //
+
+CREATE TRIGGER before_employee_salary_update_check
+BEFORE UPDATE ON employees
+FOR EACH ROW
+BEGIN
+    IF NEW.salary <= 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Salary must be a positive value';
+    END IF;
+END //
+DELIMITER ;
+
+-- Inserting sample data into the employees table
+INSERT INTO employees (emp_id, emp_name, salary)
+VALUES
+    (1, 'John Doe', 50000.00),  -- Valid: Salary is a positive value
+    (2, 'Jane Smith', -2000.00), -- Invalid: Salary is negative
+    (3, 'Alice Johnson', 0.00);  -- Invalid: Salary is zero
+
+-- Attempting to insert a row with a negative salary (this should fail)
+INSERT INTO employees (emp_id, emp_name, salary) VALUES (4, 'David', -5000.00);
+
+-- Attempting to update an existing row to set the salary to zero (this should also fail)
+UPDATE employees SET salary = 0 WHERE emp_id = 1;
+
+
+c
+
+-- Create the employees table
+CREATE TABLE employees (
+    emp_id INT PRIMARY KEY,
+    emp_name VARCHAR(100),
+    city VARCHAR(100),
+    -- other relevant columns...
+);
+
+-- Create the BEFORE INSERT and BEFORE UPDATE trigger to check residency
+DELIMITER //
+
+CREATE TRIGGER before_employee_residency_check
+BEFORE INSERT ON employees
+FOR EACH ROW
+BEGIN
+    IF NEW.city <> 'Pune' THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Employee must reside in Pune';
+    END IF;
+END //
+
+CREATE TRIGGER before_employee_residency_update_check
+BEFORE UPDATE ON employees
+FOR EACH ROW
+BEGIN
+    IF NEW.city <> 'Pune' THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Employee must reside in Pune';
+    END IF;
+END //
+DELIMITER ;
+
+
+-- Inserting sample data into the employees table
+INSERT INTO employees (emp_id, emp_name, city)
+VALUES
+    (1, 'John Doe', 'Pune'),           -- Valid: Employee resides in Pune
+    (2, 'Jane Smith', 'Mumbai'),       -- Invalid: Employee doesn't reside in Pune
+    (3, 'Alice Johnson', 'Pune');      -- Valid: Employee resides in Pune
+
+-- Attempting to insert an employee with a city other than Pune (this should fail)
+INSERT INTO employees (emp_id, emp_name, city) VALUES (4, 'David', 'Nagpur');
+
+-- Attempting to update an existing employee's city to Mumbai (this should also fail)
+UPDATE employees SET city = 'Mumbai' WHERE emp_id = 1;

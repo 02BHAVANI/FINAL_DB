@@ -1,0 +1,19 @@
+DELIMITER //
+
+CREATE PROCEDURE PrintNumbers1()
+BEGIN
+    DECLARE counter INT DEFAULT 1;
+
+    WHILE counter <= 5 DO
+        SELECT counter AS 'Number';
+        SET counter = counter + 1;
+    END WHILE;
+END //
+
+DELIMITER ;
+
+CALL PrintNumbers1();
+
+
+
+
